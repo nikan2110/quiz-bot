@@ -19,7 +19,7 @@ WEBHOOK_URL = f'{WEBHOOK_HOST}{WEBHOOK_PATH}'
 
 # webserver settings
 WEBAPP_HOST = '0.0.0.0'
-WEBAPP_PORT = os.getenv('PORT', default=8000)
+WEBAPP_PORT = int(os.getenv('PORT'))
 
 # Question for user
 QUESTIONS = {}
@@ -171,11 +171,11 @@ async def call_a_friend(callback_query: types.CallbackQuery):
     await bot.send_photo(chat_id=callback_query.from_user.id, photo=constants.IMAGE_URL)
     await bot.send_message(chat_id=callback_query.from_user.id, text=f"Kanye: {quote}")
 
-async def on_startup(dispatcher):
-    await bot.set_webhook(WEBHOOK_URL, drop_pending_updates=True)
+async def on_startup(dp: Dispatcher):
+    await bot.set_webhook(WEBHOOK_URL)
 
 
-async def on_shutdown(dispatcher):
+async def on_shutdown(dp: Dispatcher):
     await bot.delete_webhook()
 
 
