@@ -19,13 +19,13 @@ def get_questions(amount: int, category_id: int, difficulty: str):
     response.raise_for_status()
     data = response.json()["results"]
     questions_list = []
-    for question_from_API in data:
+    for questions_from_API in data:
         new_question = {}
-        new_question["question"] = question_from_API["question"].replace("&quot;", "''").replace("&#039;", "'").replace("&amp;", "and")
-        new_question["correct_answer"] = question_from_API["correct_answer"].replace("&quot;", "''").replace("&#039;", "'").replace("&amp;", "and")
-        new_question["incorrect_answer_1"] = question_from_API["incorrect_answers"][0].replace("&quot;", "''").replace("&#039;", "'").replace("&amp;", "and")
-        new_question["incorrect_answer_2"] = question_from_API["incorrect_answers"][1].replace("&quot;", "''").replace("&#039;", "'").replace("&amp;", "and")
-        new_question["incorrect_answer_3"] = question_from_API["incorrect_answers"][2].replace("&quot;", "''").replace("&#039;", "'").replace("&amp;", "and")
+        new_question["question"] = questions_from_API["question"].replace("&quot;", "''").replace("&#039;", "'").replace("&amp;", "and").replace("&shy;", "-").replace("&iacute", "i").replace("&aacute", "a")
+        new_question["correct_answer"] = questions_from_API["correct_answer"].replace("&quot;", "''").replace("&#039;", "'").replace("&amp;", "and").replace("&shy;", "-").replace("&iacute", "i").replace("&aacute", "a")
+        new_question["incorrect_answer_1"] = questions_from_API["incorrect_answers"][0].replace("&quot;", "''").replace("&#039;", "'").replace("&amp;", "and").replace("&shy;", "-").replace("&iacute", "i").replace("&aacute", "a")
+        new_question["incorrect_answer_2"] = questions_from_API["incorrect_answers"][1].replace("&quot;", "''").replace("&#039;", "'").replace("&amp;", "and").replace("&shy;", "-").replace("&iacute", "i").replace("&aacute", "a")
+        new_question["incorrect_answer_3"] = questions_from_API["incorrect_answers"][2].replace("&quot;", "''").replace("&#039;", "'").replace("&amp;", "and").replace("&shy;", "-").replace("&iacute", "i").replace("&aacute", "a")
         questions_list.append(new_question)
     return questions_list
 

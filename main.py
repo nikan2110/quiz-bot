@@ -180,6 +180,7 @@ async def on_shutdown(dp: Dispatcher):
 
 
 if __name__ == '__main__':
+    # executor.start_polling(dp, skip_updates=True)
     start_webhook(
         dispatcher=dp,
         webhook_path=WEBHOOK_PATH,

@@ -4,6 +4,7 @@ from dotenv import load_dotenv
 from pymongo import MongoClient
 import os
 import constants
+import random
 
 
 def get_from_env(key):
@@ -42,7 +43,9 @@ def get_difficulties_buttons(InlineKeyboardMarkup):
 
 
 def get_answers_buttons(question, InlineKeyboardMarkup):
-    for _, answer in question.items():
+    answers = list(question.values())
+    random.shuffle(answers)
+    for answer in answers:
         BTN_ANSWER = InlineKeyboardButton(
             answer, callback_data=f"answer + %$%{answer}")
         InlineKeyboardMarkup.add(BTN_ANSWER)
