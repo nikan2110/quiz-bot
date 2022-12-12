@@ -21,11 +21,11 @@ def get_questions(amount: int, category_id: int, difficulty: str):
     questions_list = []
     for question_from_API in data:
         new_question = {}
-        new_question["question"] = question_from_API["question"].replace("&quot;", "''").replace("&#039;", "'").replace("&‌amp;", "and")
-        new_question["correct_answer"] = question_from_API["correct_answer"].replace("&quot;", "''").replace("&#039;", "'").replace("&‌amp;", "and")
-        new_question["incorrect_answer_1"] = question_from_API["incorrect_answers"][0].replace("&quot;", "''").replace("&#039;", "'").replace("&‌amp;", "and")
-        new_question["incorrect_answer_2"] = question_from_API["incorrect_answers"][1].replace("&quot;", "''").replace("&#039;", "'").replace("&‌amp;", "and")
-        new_question["incorrect_answer_3"] = question_from_API["incorrect_answers"][2].replace("&quot;", "''").replace("&#039;", "'").replace("&‌amp;", "and")
+        new_question["question"] = question_from_API["question"].replace("&quot;", "''").replace("&#039;", "'").replace("&amp;", "and")
+        new_question["correct_answer"] = question_from_API["correct_answer"].replace("&quot;", "''").replace("&#039;", "'").replace("&amp;", "and")
+        new_question["incorrect_answer_1"] = question_from_API["incorrect_answers"][0].replace("&quot;", "''").replace("&#039;", "'").replace("&amp;", "and")
+        new_question["incorrect_answer_2"] = question_from_API["incorrect_answers"][1].replace("&quot;", "''").replace("&#039;", "'").replace("&amp;", "and")
+        new_question["incorrect_answer_3"] = question_from_API["incorrect_answers"][2].replace("&quot;", "''").replace("&#039;", "'").replace("&amp;", "and")
         questions_list.append(new_question)
     return questions_list
 

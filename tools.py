@@ -14,7 +14,7 @@ def get_from_env(key):
 
 def get_categories_buttons():
     btn_categories_list = []
-    collection_name = db["Categories"]
+    collection_name = db["Categories_English"]
     for category in collection_name.find():
         category_id = category["id"]
         category_name = category["name"]
