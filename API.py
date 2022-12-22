@@ -6,8 +6,9 @@ import logging
 logging.basicConfig(level=logging.INFO)
 
 
-# https://opentdb.com/api.php?amount=10&category=18&difficulty=easy&type=multiple
+# example - https://opentdb.com/api.php?amount=10&category=18&difficulty=easy&type=multiple
 def get_questions(amount: int, category_id: int, difficulty: str):
+    logging.info('received params for request: amount - %s, difficulty - %s, category_id - %s', amount, difficulty, category_id)
     parameters = {
         "amount": amount,
         "category": category_id,
