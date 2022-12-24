@@ -1,6 +1,7 @@
 import requests
 import constants
 import logging
+import html
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -22,11 +23,11 @@ def get_questions(amount: int, category_id: int, difficulty: str):
     questions_list = []
     for questions_from_API in data:
         new_question = {}
-        new_question["question"] = questions_from_API["question"].replace("&quot;", "''").replace("&#039;", "'").replace("&amp;", "and").replace("&shy;", "-").replace("&iacute", "i").replace("&aacute", "a")
-        new_question["correct_answer"] = questions_from_API["correct_answer"].replace("&quot;", "''").replace("&#039;", "'").replace("&amp;", "and").replace("&shy;", "-").replace("&iacute", "i").replace("&aacute", "a")
-        new_question["incorrect_answer_1"] = questions_from_API["incorrect_answers"][0].replace("&quot;", "''").replace("&#039;", "'").replace("&amp;", "and").replace("&shy;", "-").replace("&iacute", "i").replace("&aacute", "a")
-        new_question["incorrect_answer_2"] = questions_from_API["incorrect_answers"][1].replace("&quot;", "''").replace("&#039;", "'").replace("&amp;", "and").replace("&shy;", "-").replace("&iacute", "i").replace("&aacute", "a")
-        new_question["incorrect_answer_3"] = questions_from_API["incorrect_answers"][2].replace("&quot;", "''").replace("&#039;", "'").replace("&amp;", "and").replace("&shy;", "-").replace("&iacute", "i").replace("&aacute", "a")
+        new_question["question"] = html.unescape(questions_from_API["question"])
+        new_question["correct_answer"] = html.unescape(questions_from_API["correct_answer"])
+        new_question["incorrect_answer_1"] = html.unescape(questions_from_API["incorrect_answers"][0])
+        new_question["incorrect_answer_2"] = html.unescape(questions_from_API["incorrect_answers"][1])
+        new_question["incorrect_answer_3"] = html.unescape(questions_from_API["incorrect_answers"][2])
         questions_list.append(new_question)
     return questions_list
 
