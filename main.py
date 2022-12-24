@@ -5,8 +5,14 @@ import constants
 import API
 import os
 import datetime as dt
+from aiogram.contrib.fsm_storage.memory import MemoryStorage
 from aiogram import Bot, Dispatcher, types, executor
 from aiogram.utils.executor import start_webhook
+from aiogram.dispatcher.filters.state import State, StatesGroup
+from aiogram.dispatcher import FSMContext
+
+class Form(StatesGroup):
+    name = State()
 
 # Credentials
 API_TOKEN = tools.get_from_env("TELEGRAM_API_TOKEN")
@@ -26,7 +32,8 @@ logging.basicConfig(level=logging.INFO)
 
 # Initialize bot and dispatcher and DB
 bot = Bot(token=API_TOKEN)
-dp = Dispatcher(bot)
+storage = MemoryStorage()
+dp = Dispatcher(bot, storage=storage)
 
 
 @dp.message_handler(commands=['start', 'help'])
@@ -42,6 +49,7 @@ async def send_welcome(message: types.Message):
 
 @dp.callback_query_handler(text='play')
 async def register_user(callback_query: types.CallbackQuery):
+    await Form.name.set()
     chat_id = callback_query.from_user.id
     current_user = tools.user_collection.find_one(filter={"id": chat_id})
     logging.info('received user_name after play button: %s',
@@ -67,19 +75,17 @@ async def cancel(callback_query: types.CallbackQuery):
     await bot.send_message(chat_id=callback_query.from_user.id, text=constants.GOODBYE_TEXT)
 
 
-@dp.message_handler()
-async def register(message: types.Message):
-    key_word = message.text.split(":")[0].lower()
-    if key_word.startswith("name"):
-        user_name = message.text.split(":")[1].title().strip()
+@dp.message_handler(state=Form.name)
+async def register(message: types.Message, state: FSMContext):
+    async with state.proxy():
+        user_name = message.text
         chat_id = message.from_user.id
         tools.user_collection.update_one(filter={"id": chat_id}, update={
             "$set": {"user_name": user_name}})
         logging.info('received user_name after registration: %s', user_name)
         await message.answer(text=f"Hello, {user_name}! Nice to meet you! ")
         await message.answer(text=constants.NUMBER_OF_QUESTIONS_TEXT,  reply_markup=inline_keyboard.QUESTIONS)
-    else:
-        await message.answer(text="Press play to start new quiz",  reply_markup=inline_keyboard.PLAY)
+        await state.finish()
 
 
 @dp.callback_query_handler(text_startswith="continue")

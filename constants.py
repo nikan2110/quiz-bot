@@ -6,7 +6,7 @@ number_of_questions = [5, 10, 15, 20, 25, 30, 35, 40, 45, 50]
 difficulties = ["easy 🤓", "medium 🤔", "hard 🤯"]
 
 GREETING_TEXT = "Hello, I'm quiz bot " + "😏" + " Do you want to play a game?"
-TAKE_USER_NAME_TEXT = "First, tell me your name. Write your name in this format: \n Name : YOUR_NAME"
+TAKE_USER_NAME_TEXT = "First, write your name please."
 GOODBYE_TEXT = "See you next time 😊"
 NUMBER_OF_QUESTIONS_TEXT = "How many questions do you want?"
 CATEGORY_TEXT = "Choose your category"
