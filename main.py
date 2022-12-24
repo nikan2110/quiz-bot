@@ -81,6 +81,7 @@ async def register(message: types.Message, state: FSMContext):
         user_name = message.text.strip()
         if user_name == '/start':
             await message.answer(text="Please, use another name")
+            return
         chat_id = message.from_user.id
         tools.user_collection.update_one(filter={"id": chat_id}, update={
             "$set": {"user_name": user_name}})
