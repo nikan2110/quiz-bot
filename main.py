@@ -85,7 +85,7 @@ async def register(message: types.Message, state: FSMContext):
         logging.info('received user_name after registration: %s', user_name)
         await message.answer(text=f"Hello, {user_name}! Nice to meet you! ")
         await message.answer(text=constants.NUMBER_OF_QUESTIONS_TEXT,  reply_markup=inline_keyboard.QUESTIONS)
-        await state.finish()
+
 
 
 @dp.callback_query_handler(text_startswith="continue")
@@ -133,26 +133,30 @@ async def difficulty_and_first_question(callback_query: types.CallbackQuery):
         question_text = current_question["question"]
         del current_question["question"]
         await bot.send_message(chat_id=chat_id, text=question_text,  reply_markup=inline_keyboard.create_answers_buttons(current_question))
-
+    else:
+        await bot.send_message(chat_id=callback_query.from_user.id,text=constants.GREETING_TEXT, reply_markup=inline_keyboard.PLAY)
 
 @dp.callback_query_handler(text_startswith="answer")
 async def check_answer(callback_query: types.CallbackQuery):
     user_answer = callback_query.data.split("%$%")[1]
     chat_id = callback_query.from_user.id
     current_user = tools.user_collection.find_one(filter={"id": chat_id})
-    current_question = current_user['questions'][0]
-    right_answer = current_question["correct_answer"]
-    message_text = ""
-    if user_answer == right_answer:
-        count = current_user["count_correct_answers"]
-        count += 1
-        tools.user_collection.update_one(filter={"id": chat_id}, update={
-            "$set": {"count_correct_answers": count}})
-        message_text = constants.RIGHT_ANSWER
+    if len(current_user["questions"]) != 0:
+        current_question = current_user['questions'][0]
+        right_answer = current_question["correct_answer"]
+        message_text = ""
+        if user_answer == right_answer:
+            count = current_user["count_correct_answers"]
+            count += 1
+            tools.user_collection.update_one(filter={"id": chat_id}, update={
+                "$set": {"count_correct_answers": count}})
+            message_text = constants.RIGHT_ANSWER
+        else:
+            message_text = constants.WRONG_ANSWER
+        await bot.send_message(chat_id=callback_query.from_user.id, text=message_text + right_answer, reply_markup=inline_keyboard.NEXT)
     else:
-        message_text = constants.WRONG_ANSWER
-    await bot.send_message(chat_id=callback_query.from_user.id, text=message_text + right_answer, reply_markup=inline_keyboard.NEXT)
-
+        await bot.send_message(chat_id=callback_query.from_user.id,text=constants.GREETING_TEXT, reply_markup=inline_keyboard.PLAY)
+        
 
 @dp.callback_query_handler(text_startswith="next")
 async def next_question(callback_query: types.CallbackQuery):
