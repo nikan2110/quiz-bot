@@ -79,11 +79,14 @@ async def cancel(callback_query: types.CallbackQuery):
 async def register(message: types.Message, state: FSMContext):
     async with state.proxy():
         user_name = message.text.strip()
+        if user_name == '/start':
+            await message.answer(text="Please, use another name")
         chat_id = message.from_user.id
         tools.user_collection.update_one(filter={"id": chat_id}, update={
             "$set": {"user_name": user_name}})
         logging.info('received user_name after registration: %s', user_name)
         await message.answer(text=f"Hello, {user_name}! Nice to meet you! ")
+        await state.finish()
         await message.answer(text=constants.NUMBER_OF_QUESTIONS_TEXT,  reply_markup=inline_keyboard.QUESTIONS)
 
 
