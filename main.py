@@ -78,7 +78,7 @@ async def cancel(callback_query: types.CallbackQuery):
 @dp.message_handler(state=Form.name)
 async def register(message: types.Message, state: FSMContext):
     async with state.proxy():
-        user_name = message.text
+        user_name = message.text.strip()
         chat_id = message.from_user.id
         tools.user_collection.update_one(filter={"id": chat_id}, update={
             "$set": {"user_name": user_name}})
