@@ -49,12 +49,12 @@ async def send_welcome(message: types.Message):
 
 @dp.callback_query_handler(text='play')
 async def register_user(callback_query: types.CallbackQuery):
-    await Form.name.set()
     chat_id = callback_query.from_user.id
     current_user = tools.user_collection.find_one(filter={"id": chat_id})
     logging.info('received user_name after play button: %s',
                  current_user["user_name"])
     if current_user["user_name"] == "":
+        await Form.name.set()
         await bot.send_message(chat_id=chat_id, text=constants.TAKE_USER_NAME_TEXT)
     else:
         user_name = current_user["user_name"]
