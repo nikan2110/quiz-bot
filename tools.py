@@ -25,13 +25,13 @@ def get_categories_buttons():
     return btn_categories_list
 
 
-def get_questions_buttons():
-    btn_list = []
+def get_number_of_questions_buttons():
+    btn_number_of_questions_list = []
     for number in constants.number_of_questions:
-        BTN_QUESTION = InlineKeyboardButton(
-            str(number), callback_data=f"question_number + :{number}")
-        btn_list.append(BTN_QUESTION)
-    return btn_list
+        BTN_NUMBER_OF_QUESTIONS = InlineKeyboardButton(
+            str(number), callback_data=f"number_of_questions + :{number}")
+        btn_number_of_questions_list.append(BTN_NUMBER_OF_QUESTIONS)
+    return btn_number_of_questions_list
 
 
 def get_difficulties_buttons(InlineKeyboardMarkup):
@@ -51,8 +51,8 @@ def get_answers_buttons(question, InlineKeyboardMarkup):
         InlineKeyboardMarkup.add(BTN_ANSWER)
     return InlineKeyboardMarkup
 
-
-CONNECTION_STRING = get_from_env("MONGO_CONNECTION")
+# initialize data base
+CONNECTION_STRING = get_from_env("MONGO_CONNECTION") # credentials from mongo db atlas
 client = MongoClient(CONNECTION_STRING)
-db = client['QuizBot']
-user_collection = db["Users"]
+db = client['QuizBot'] # choose database, in my case 'QuizBot'
+user_collection = db["Users"] # choose collection, in my case 'Users'
