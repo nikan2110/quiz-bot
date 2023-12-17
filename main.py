@@ -14,6 +14,9 @@ from aiogram.dispatcher import FSMContext
 
 # create state for conversation handler when receive user name
 class Form(StatesGroup):
+    """
+       Represents the state of the conversation handler for receiving a user's name.
+       """
     name = State()
 
 
@@ -41,6 +44,15 @@ dp = Dispatcher(bot, storage=storage)
 
 # helper function to avoid code duplication
 def create_answers_and_question(current_user):
+    """
+    Creates a dictionary containing the current question text and its associated answers.
+
+    Args:
+    current_user (dict): A dictionary representing the current user's data, including their questions.
+
+    Returns:
+    dict: A dictionary with the question text and a modified version of the current question.
+    """
     current_question = current_user['questions'][0]
     question_text = current_question["question"]
     del current_question[
@@ -55,6 +67,12 @@ def create_answers_and_question(current_user):
 # command start
 @dp.message_handler(commands='start')
 async def send_welcome(message: types.Message):
+    """
+    Sends a welcome message to the user when they start the bot.
+
+    Args:
+    message (types.Message): The message received from the user.
+    """
     chat_id = message.from_user.id
     logging.info('start button pushed. received chat_id: %s', chat_id)
     await message.answer(text=constants.GREETING_TEXT, reply_markup=inline_keyboard.PLAY)
@@ -63,6 +81,12 @@ async def send_welcome(message: types.Message):
 # play button
 @dp.callback_query_handler(text='play')
 async def register_user(callback_query: types.CallbackQuery):
+    """
+    Handles the 'play' callback query, registering a new user or preparing an existing user to start the game.
+
+    Args:
+    callback_query (types.CallbackQuery): The callback query received from the user.
+    """
     chat_id = callback_query.from_user.id
     current_user = tools.user_collection.find_one(filter={"id": chat_id})
     if current_user is None:
@@ -90,6 +114,12 @@ async def register_user(callback_query: types.CallbackQuery):
 # cancel button
 @dp.callback_query_handler(text='cancel')
 async def cancel(callback_query: types.CallbackQuery):
+    """
+    Handles the 'cancel' callback query, canceling the current operation or game.
+
+    Args:
+    callback_query (types.CallbackQuery): The callback query received from the user.
+    """
     chat_id = callback_query.from_user.id
     tools.user_collection.update_one(filter={"id": chat_id}, update={
         "$set": {"questions": ""}})
@@ -99,6 +129,13 @@ async def cancel(callback_query: types.CallbackQuery):
 # save user name to database
 @dp.message_handler(state=Form.name)
 async def register(message: types.Message, state: FSMContext):
+    """
+    Registers a user's name in the database.
+
+    Args:
+    message (types.Message): The message received from the user.
+    state (FSMContext): The finite state machine context.
+    """
     async with state.proxy():
         user_name = message.text.strip()
         if user_name == '/start':
@@ -118,6 +155,12 @@ async def register(message: types.Message, state: FSMContext):
 # user already exist and want to continue the game
 @dp.callback_query_handler(text_startswith="continue")
 async def user_exist(callback_query: types.CallbackQuery):
+    """
+    Handles the 'continue' callback query for users who already exist and want to continue the game.
+
+    Args:
+    callback_query (types.CallbackQuery): The callback query received from the user.
+    """
     await bot.send_message(chat_id=callback_query.from_user.id, text=constants.NUMBER_OF_QUESTIONS_TEXT,
                            reply_markup=inline_keyboard.NUMBER_OF_QUESTIONS)
 
@@ -125,6 +168,12 @@ async def user_exist(callback_query: types.CallbackQuery):
 # choose number of questions
 @dp.callback_query_handler(text_startswith="number")
 async def questions(callback_query: types.CallbackQuery):
+    """
+    Handles the selection of the number of questions for the game.
+
+    Args:
+    callback_query (types.CallbackQuery): The callback query received from the user.
+    """
     number_of_questions = callback_query.data.split(":")[1]
     chat_id = callback_query.from_user.id
     logging.info('received number of questions: %s', number_of_questions)
@@ -138,6 +187,12 @@ async def questions(callback_query: types.CallbackQuery):
 # choose category
 @dp.callback_query_handler(text_startswith="category")
 async def categories(callback_query: types.CallbackQuery):
+    """
+    Handles the selection of the question category for the game.
+
+    Args:
+    callback_query (types.CallbackQuery): The callback query received from the user.
+    """
     category_id = callback_query.data.split(":")[1]
     chat_id = callback_query.from_user.id
     logging.info('received category id: %s', category_id)
@@ -151,6 +206,12 @@ async def categories(callback_query: types.CallbackQuery):
 # choose difficulty and send first question
 @dp.callback_query_handler(text_startswith="difficulty")
 async def difficulty_and_first_question(callback_query: types.CallbackQuery):
+    """
+    Sets the difficulty for the game and sends the first question to the user.
+
+    Args:
+    callback_query (types.CallbackQuery): The callback query received from the user.
+    """
     difficulty = callback_query.data.split(":")[1]
     chat_id = callback_query.from_user.id
     logging.info('received difficulty: %s', difficulty)
@@ -179,13 +240,18 @@ async def difficulty_and_first_question(callback_query: types.CallbackQuery):
 # receive an answer from user and compare it with the right answer
 @dp.callback_query_handler(text_startswith="answer")
 async def check_answer(callback_query: types.CallbackQuery):
+    """
+    Checks the user's answer to a question and responds accordingly.
+
+    Args:
+    callback_query (types.CallbackQuery): The callback query containing the user's answer.
+    """
     user_answer = callback_query.data.split("%$%")[1]
     chat_id = callback_query.from_user.id
     current_user = tools.user_collection.find_one(filter={"id": chat_id})
     if len(current_user["questions"]) != 0:
         current_question = current_user['questions'][0]
         right_answer = current_question["correct_answer"]
-        message_text = ""
         if user_answer == right_answer:
             count = current_user["count_correct_answers"]
             count += 1
@@ -206,6 +272,12 @@ async def check_answer(callback_query: types.CallbackQuery):
 # get a next question
 @dp.callback_query_handler(text_startswith="next")
 async def next_question(callback_query: types.CallbackQuery):
+    """
+    Proceeds to the next question in the game.
+
+    Args:
+    callback_query (types.CallbackQuery): The callback query received from the user.
+    """
     chat_id = callback_query.from_user.id
     current_user = tools.user_collection.find_one(filter={"id": chat_id})
     list_of_questions = current_user['questions']
@@ -228,6 +300,12 @@ async def next_question(callback_query: types.CallbackQuery):
 
 @dp.callback_query_handler(text_startswith="friend")
 async def call_a_friend(callback_query: types.CallbackQuery):
+    """
+    Simulates the 'call a friend' lifeline by providing a random quote.
+
+    Args:
+    callback_query (types.CallbackQuery): The callback query received from the user.
+    """
     logging.info('somebody asked kanye west')
     quote = API.get_quote()
     await bot.send_photo(chat_id=callback_query.from_user.id, photo=constants.IMAGE_URL)

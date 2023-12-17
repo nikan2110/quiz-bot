@@ -8,12 +8,30 @@ import random
 
 
 def get_from_env(key):
+    """
+    Retrieves a value from the environment variables based on the given key.
+
+    Args:
+    key (str): The key for the environment variable.
+
+    Returns:
+    str: The value of the environment variable corresponding to the provided key.
+    """
     dotenv_path = join(dirname(__file__), '.env')
     load_dotenv(dotenv_path)
     return os.environ.get(key)
 
 
 def get_categories_buttons():
+    """
+    Generates a list of InlineKeyboardButtons for different categories.
+
+    Each button is associated with a category from the database. The buttons are used
+    in a Telegram bot to allow users to select a category.
+
+    Returns:
+    list: A list of InlineKeyboardButton objects, each representing a category.
+    """
     btn_categories_list = []
     collection_name = db["Categories_English"]
     for category in collection_name.find():
@@ -26,6 +44,15 @@ def get_categories_buttons():
 
 
 def get_number_of_questions_buttons():
+    """
+    Creates a list of InlineKeyboardButtons for selecting the number of questions.
+
+    The buttons are used in a Telegram bot to allow users to choose how many questions
+    they want to answer in a quiz.
+
+    Returns:
+    list: A list of InlineKeyboardButton objects for different question quantities.
+    """
     btn_number_of_questions_list = []
     for number in constants.number_of_questions:
         BTN_NUMBER_OF_QUESTIONS = InlineKeyboardButton(
@@ -35,6 +62,15 @@ def get_number_of_questions_buttons():
 
 
 def get_difficulties_buttons(InlineKeyboardMarkup):
+    """
+     Adds difficulty level buttons to an InlineKeyboardMarkup object.
+
+     Args:
+     InlineKeyboardMarkup (InlineKeyboardMarkup): The markup to which the difficulty buttons will be added.
+
+     Returns:
+     InlineKeyboardMarkup: The updated InlineKeyboardMarkup object with difficulty buttons.
+     """
     for difficulty in constants.difficulties:
         BTN_DIFFICULTY = InlineKeyboardButton(
             difficulty, callback_data=f"difficulty + :{difficulty}")
@@ -43,6 +79,16 @@ def get_difficulties_buttons(InlineKeyboardMarkup):
 
 
 def get_answers_buttons(question, InlineKeyboardMarkup):
+    """
+    Adds answer option buttons to an InlineKeyboardMarkup object for a given question.
+
+    Args:
+    question (dict): A dictionary containing the question and its answer options.
+    InlineKeyboardMarkup (InlineKeyboardMarkup): The markup to which the answer buttons will be added.
+
+    Returns:
+    InlineKeyboardMarkup: The updated InlineKeyboardMarkup object with answer option buttons.
+    """
     answers = list(question.values())
     random.shuffle(answers)
     for answer in answers:

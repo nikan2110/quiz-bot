@@ -9,6 +9,17 @@ logging.basicConfig(level=logging.INFO)
 
 # example - https://opentdb.com/api.php?amount=10&category=18&difficulty=easy&type=multiple
 def get_questions(amount: int, category_id: int, difficulty: str):
+    """
+    Fetches a list of questions from an external API based on specified parameters.
+
+    Args:
+    amount (int): The number of questions to fetch.
+    category_id (int): The identifier for the category of questions.
+    difficulty (str): The difficulty level of the questions (e.g., "easy", "medium", "hard").
+
+    Returns:
+    list: A list of dictionaries, each representing a question and its associated answers.
+    """
     logging.info('received params for request: amount - %s, difficulty - %s, category_id - %s', amount, difficulty, category_id)
     parameters = {
         "amount": amount,
@@ -33,6 +44,12 @@ def get_questions(amount: int, category_id: int, difficulty: str):
 
 
 def get_quote():
+    """
+    Fetches a random quote from an external API.
+
+    Returns:
+    str: A string containing the quote.
+    """
     response = requests.get(constants.BASE_URL_KANYE)
     response.raise_for_status()
     data = response.json()['quote']
