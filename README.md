@@ -12,7 +12,7 @@ Welcome to **Quiz Bot**, a fun and interactive way to test your knowledge direct
 
 ## How to Play
 
-1. **Start the Bot**: Find `@quiz_doroshenko_bot` in Telegram.
+1. **Start the Bot**: Find ```@quiz_doroshenko_bot``` in Telegram.
 2. **Choose Your Preferences**: Select the number of questions, category, and difficulty level.
 3. **Answer Questions**: Respond to the questions and see how many you get right!
 4. **Get Your Score**: At the end of the quiz, see your score and challenge yourself to improve.
